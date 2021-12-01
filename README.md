@@ -1,11 +1,31 @@
 # Analiza podatkov s programom R - 2021/22
 
-Vzorčni repozitorij za projekt pri predmetu APPR v študijskem letu 2021/22. 
+## Analiza potrosnje v Sloveniji
 
-## Tematika
+Pri projektni nalogi bom analiziral potrosnjo prebivalstva v Sloveniji. Opazoval bom potrosnjo po gospodinjstvih pri spremembi BDP skozi leta 2012-2020. Bolj podrobno se bom posvetil potrosnji energijskih virov.
 
-Izbrali si boste temo, s katero se bo vaš projekt ukvarjal.
-Tukaj boste napisali, kje ste dobili podatke, ter kakšen je vaš cilj.
+### Tabele:
+
+- Tabela 1: BDP po regijah
+
+- Tabela 2: Cene energentov
+    
+- Tabela 3: Dostop do interneta
+    
+- Tabela 4: Potrosnja
+
+- Tabela 5: Prebivalstvo
+
+- Tabela 6: Razpolozljiv dohodek po regijah
+
+### Viri:
+
+- https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/05A1002S.px/table/tableViewLayout2/
+- https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/2974001S.px/table/tableViewLayout2/
+- https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/H028S.px/table/tableViewLayout2/
+- https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/0878701S.px/table/tableViewLayout2/
+- https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/H219S.px/table/tableViewLayout2/
+- https://pxweb.stat.si/SiStatData/pxweb/sl/Data/-/0867385S.px/table/tableViewLayout2/
 
 ## Program
 
