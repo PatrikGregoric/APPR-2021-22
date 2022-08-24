@@ -58,6 +58,21 @@ plot(graf_poraba_gospodinjstev)
 zemljevid = uvozi.zemljevid("http://biogeo.ucdavis.edu/data/gadm2.8/shp/SVN_adm_shp.zip",
                             "SVN_adm1", mapa = 'zemljevid', encoding = "UTF-8")
 
-zemljevid$NAME_1 <- c("Gorenjska", "Goriška","Jugovzhodna Slovenija", "Koroška", "Primorsko-notranjska", "Obalno-kraška", "Osrednjeslovenska", "Podravska", "Pomurska", "Savinjska", "Posavska", "Zasavska")
+zemljevid$NAME_1 = c("Gorenjska", "Goriška","Jugovzhodna Slovenija", "Koroška", "Primorsko-notranjska", "Obalno-kraška", "Osrednjeslovenska", "Podravska", "Pomurska", "Savinjska", "Posavska", "Zasavska")
 
-zemljevid <- fortify(zemljevid)
+zemljevid = fortify(zemljevid)
+#1. zemljevid: BDP po regijah v letu 2019
+
+zemljevid_BDP = ggplot() + geom_polygon(data=left_join(zemljevid, BDP_regije.1, by=c("NAME_1"="statisticna_regija")),
+                                        aes(x=long, y=lat, group=group, fill=BDP)) +
+  geom_line() + 
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) +
+  guides(fill=guide_colorbar(title="BDP")) +
+  ggtitle("BDP po regijah v letu 2019") +
+  labs(x = " ") +
+  labs(y = " ") +
+  scale_fill_gradient(low = "white", high = "red",
+                      space = "Lab", na.value = "#e0e0d1", guide = "black",
+                      aesthetics = "fill")
+plot(zemljevid_BDP)

@@ -14,15 +14,18 @@ BDP_regije = read.csv2(
   fileEncoding = "UTF-8",
   sep = ";")
 
-BDP_regije.1 = pivot_longer(BDP_regije,
+BDP_regije = pivot_longer(BDP_regije,
                             cols = colnames(BDP_regije)[-1],
                             names_to = "leto",
                             values_to = "BDP")
 
-BDP_regije.1 = BDP_regije.1 %>%
+BDP_regije = BDP_regije %>%
   group_by(leto) %>%
   mutate(leto = str_replace_all(leto, "X{1}", "")) %>%
   rename(statisticna_regija = STATISTIČNA.REGIJA)
+
+BDP_regije.1 = BDP_regije %>%
+  filter(leto == "2019", statisticna_regija != "SLOVENIJA")
 
 Cene_energentov = read.csv2(
   "podatki/Cene energentov.csv",
@@ -36,11 +39,19 @@ Cene_energentov = pivot_longer(Cene_energentov,
                                values_to = "cena")
 
 Cene_energentov = Cene_energentov %>%
-  mutate(leto = str_sub(leto, 2, 5))
+  mutate(leto = str_sub(leto, 2, 5)) %>%
+  transform(Cene_energentov, cena = as.numeric(cena))
 
 Cene_energentov = Cene_energentov %>%
-  group_by(leto) %>%
-  summarise(list(mean = mean(cena, na.rm = TRUE)))
+  group_by(leto, ENERGENT) %>%
+  summarise(cena = mean(cena, na.rm = TRUE)) %>%
+  group_by(leto, ENERGENT) %>%
+  summarise(cena = round(cena, digits = 2))
+
+Cene_energentov$cena[Cene_energentov$ENERGENT == "Kurilno olje (EUR/1000 l)"] = Cene_energentov$cena[Cene_energentov$ENERGENT == "Kurilno olje (EUR/1000 l)"]/1000
+
+Cene_energentov = Cene_energentov %>%
+  mutate(ENERGENT = str_replace_all(ENERGENT, "[10]",""))
 
 Poraba_gospodinjstev = read.csv(
   "podatki/Poraba gospodinjstev.csv",
@@ -65,12 +76,20 @@ Dostop_do_interneta = read.csv(
   sep = ";")
 
 Dostop_do_interneta = Dostop_do_interneta %>%
-  rename(Dostop_do_interneta = DOSTOP.GOSPODINJSTEV.DO.INTERNETA,
-         Stevilo_gospodinjstev = Število.gospodinjstev...SKUPAJ)
+  rename(Dostop= DOSTOP.GOSPODINJSTEV.DO.INTERNETA,
+         Stevilo_gospodinjstev = Število.gospodinjstev...SKUPAJ) %>%
+  mutate(Dostop = str_replace_all(Dostop, "[\\s–-]", ""))
 
-Dostop_do_interneta_poskus = pivot_wider(Dostop_do_interneta,
-                                         names_from = Dostop_do_interneta,
+Dostop_do_interneta = pivot_wider(Dostop_do_interneta,
+                                         names_from = Dostop,
                                          values_from = Stevilo_gospodinjstev)
+
+Dostop_do_interneta = Dostop_do_interneta %>%
+  rename(Vsa.gospodinjstva = GospodinjstvaSKUPAJ,
+         Gospodinjstva.z.internetom = Dostopdointerneta)
+
+Dostop_do_interneta = Dostop_do_interneta %>%
+  mutate(delez = Gospodinjstva.z.internetom/Vsa.gospodinjstva)
 
 Prebivalstvo = read.csv(
   "podatki/Prebivalstvo Slovenije.csv",
@@ -86,4 +105,11 @@ Prebivalstvo = pivot_longer(Prebivalstvo,
                             values_to = "stevilo")
 
 Prebivalstvo = Prebivalstvo[,-1] %>% # prvi stolpec nam ne poda nobene informacije
-  mutate(leto = str_replace_all(leto, "X{1}", ""))
+  mutate(leto = str_replace_all(leto, "[^\\d{4}]", "")) %>%
+  mutate(leto = str_sub(leto, 1, 4))
+
+Prebivalstvo = Prebivalstvo %>%
+  group_by(leto) %>%
+  summarise(stevilo = mean(stevilo, na.rm = FALSE))
+
+
