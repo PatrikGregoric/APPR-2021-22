@@ -4,6 +4,7 @@ library(readr)
 library(tidyr)
 library(dplyr)
 library(data.table)
+library(reshape2)
 
 sl <- locale("sl", decimal_mark=",", grouping_mark=".")
 

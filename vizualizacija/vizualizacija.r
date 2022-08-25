@@ -18,7 +18,7 @@ graf_cene_energentov = ggplot(data = Cene_energentov, mapping = aes(x=leto, y=ce
   theme(legend.text = element_text(size=8)) + 
   ggtitle("Cene energentov")
 
-plot(graf_cene_energentov)
+
 #2.graf: BDP regije
 
 graf_BDP = ggplot(data = filter(BDP_regije, statisticna_regija == 'Pomurska' | statisticna_regija == 'Podravska' |
@@ -31,15 +31,16 @@ graf_BDP = ggplot(data = filter(BDP_regije, statisticna_regija == 'Pomurska' | s
                   geom_point() +
                   facet_wrap(statisticna_regija~., ncol=3) +
                   theme(axis.text.x = element_text(angle = 90, size=6))
-plot(graf_BDP)
+
+
 #3.graf: Dostop gospodinjstev do interneta
 graf_dostop_do_interneta = ggplot(data = Dostop_do_interneta, mapping = aes(x=LETO, y=delez)) + 
   geom_line(stat = "identity", position = "identity") +
   theme(axis.text.x = element_text(angle = 90,size = 8)) +
   labs(y = "Odstotki") +
-  ggtitle("Dostop gospodinjstev do interneta")
+  ggtitle("Dostop gospodinjstev do interneta v odstotkih")
 
-plot(graf_dostop_do_interneta)  
+
 
 #4.graf: Poraba gospodinjstev
 
@@ -51,7 +52,7 @@ graf_poraba_gospodinjstev = ggplot(data = filter(Poraba_gospodinjstev, vrsta == 
                                   geom_point() +
                                   facet_wrap(vrsta~., ncol=3) +
                                   theme(axis.text.x = element_text(angle = 90, size=6))
-plot(graf_poraba_gospodinjstev)
+
 
 #Preberemo zemljevid Slovenije
 
@@ -75,4 +76,4 @@ zemljevid_BDP = ggplot() + geom_polygon(data=left_join(zemljevid, BDP_regije.1, 
   scale_fill_gradient(low = "white", high = "red",
                       space = "Lab", na.value = "#e0e0d1", guide = "black",
                       aesthetics = "fill")
-plot(zemljevid_BDP)
+

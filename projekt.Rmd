@@ -1,6 +1,6 @@
 ---
-title: "Poročilo pri predmetu Analiza podatkov s programom R"
-author: "Študent FMF"
+title: "Analiza potrošnje v Sloveniji"
+author: "Patrik Gregorič"
 output:
   html_document: default
   pdf_document:
@@ -22,21 +22,84 @@ source("lib/libraries.r", encoding="UTF-8")
 
 ***
 
+V svoji nalogi sem se odločil pregledati potrošnjo gospodinjstev v Sloveniji. Namen naloge je bil preučiti ali imajo kakšni drugi dejavniki kot je razvoj (povečan dostop do interneta), večji BDP, različne cene energentov kakšen vpliv na potrošnjo gospodinjstev. Podatki in analiza, ki sem jo naredil sestoji iz pred časa Ukrajinske krize, tako da je zanimivo opazovati spremembe katerih smo deležni danes ter napovedi, ki jih ustvarimo iz informacij, ki so nam bile dane pred krizo.
+
 ## Obdelava, uvoz in čiščenje podatkov
+
+***
 
 ```{r uvoz}
 source("uvoz/uvoz.r", encoding="UTF-8")
 ```
 
-***
+Podatke sem pridobil iz spletne strani SURS. Podatki obsegajo predvsem obdobje zadnjih desetih let. Dobil sem jih v CSV obliki in jih preuredil v naslednje tabele.
+
+Tabela 1(BDP po regijah skupaj s povprečjem Slovenije):
+
+- `Statisticna_regija` - spremenljivka: regija
+- `Leto` - spremenljivka: leto
+- `BDP` - meritev: BDP na prebivalca
+
+Tabela 2(Cene energentov):
+
+- `Energent` - spremenljivka: vrsta energenta
+- `Leto` - spremenljivka: leto
+- `Cena` - meritev: cena
+
+Tabela 3(Potrosnja po gospodinjstvih):
+
+- `Vrsta` - spremenljivka: vrste stroskov gospodinjstev
+- `Leto` - spremenljivka: leto
+- `Cena` - meritev: strosek
+
+Tabela 4(Dostop do interneta po gospodinjstvih):
+
+- `Gospodinjstva` - spremenljivka: vsa gospodinjstva in gospodinjstva z internetom
+- `Leto` - spremenljivka: leto
+- `Število_gospodinjstev` - meritev: število gospodinjstev in odstotek
+
+Tabela 5(Prebivalstvo Slovenije):
+
+- `Prebivalstvo` - meritev: število prebivalcev Slovenije
+- `Leto` - spremenljivka: leto
 
 ## Analiza in vizualizacija podatkov
+
+***
 
 ```{r vizualizacija, results='hide'}
 source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 ```
 
-***
+```{r}
+graf_cene_energentov
+```
+
+Iz grafa opazimo zanimivo stvar, da so se cene energentov čez čas zniževale ali pa ostajale iste, kar je zanimivo, če upoštevamo učinek inflacije. Graf nam namiguje, da bi potrošnja na tovrstnih stroških kot je promet se znižala, kurilno olje, zemeljski plin ter električna energija pa ostajajo na isti ceni.
+
+```{r}
+graf_BDP
+```
+
+Vidimo da se BDP po vseh regijah čez čas povečuje, kar je tudi za pričakovat. To lahko namiguje na večjo potrošnjo gospodinjstev.
+
+```{r}
+graf_dostop_do_interneta
+```
+
+Dostop do interneta po gospodinjstvih tudi narašča ter vidimo velik skok v letu 2016. Na to bomo pozorni pri potrošnji po gospodinjstvih ali vpliva na kaj večjo porabo električne energije, glede na to, da se njena cena ni nič povečala v tem času, je ostala konstantna.
+
+```{r}
+graf_poraba_gospodinjstev
+```
+
+Tu predstavljata bencin in dizelsko gorivo stroške energentov na gospodinjstvo pri prometu in vse ostalo znotraj gospodinjstva. Potrošnja bencina se čez čas zniža, potrošnja dizelskega goriva pa poveča. Ta informacija nam pove, da sprememba cene goriva ne vpliva na potrošnjo teh dveh goriv, saj njuna cena niha sorazmerno. Želeli smo pogledati ali dostop do interneta vpliva na potrošnjo električne energije po gospodinjstvih, vendar podatki nam to ne potrjujejo. Potrošnja električne energije ostaja enaka, prav tako stroški komunikacije, edini paded opazimo pri strošku tekočih goriv znotraj gospodinjstev.
+
+```{r}
+zemljevid_BDP
+```
+
+Iz slike razberemo BDP na prebivalca Slovenije v letu 2019. Opazimo, da je najvišji BDP v Osrednjeslovenski regiji, kar nas ne preseneča. Najnižji BDP ima Zasavska regija, ki meji na Osrednjeslovensko regijo ter ta podatek nas lahko malenkost preseneti.
 
 ## Napredna analiza podatkov
 
@@ -46,6 +109,39 @@ source("analiza/analiza.r", encoding="UTF-8")
 
 ***
 
+```{r}
+graf_regresijska_premica_dostop
+```
+
+Z regresijsko premico napovedujemo povečanje dostopa do interneta po gospodinjstvih v naslednjih letih. Ta podatek si razlagamo z vse večjim razvojem in lažjo dostopnostjo. Premica napoveduje, da bodo do leta 2025 imela vsa gospodinjstva dostop do interneta, kar je precej optimistična napoved, seveda imamo zato tudi temno označen interval zaupanja, ki označuje možnost netočne napovedi.
+
+```{r}
+graf_regresijska_premica_BDP
+```
+
+Regresijska premica BDP na prebivalca napoveduje rast BDP. To nas ne preseneča, saj se življenski standard povečuje. Hkrati pa tudi zaradi inflacije količina denarja izgublja vrednost.
+
+```{r}
+graf_regresijska_premica_potrosnja
+```
+
+Regresijska premica potrošnje energetskih virov po gospodinjstvih napoveduje rahel padec v stroških, čeprav se celotni stroški gospodinjstev (ne le energetski viri, ki so tu prikazani) povečujejo. Zaradi zelo majhnega vzorca podatkov je interval zaupanja zelo velik in nam ta regresijska premica lahko predstavi napačno sliko. 
+
+```{r}
+cluster_zemljevid_BDP
+```
+
+Zemljevid nam predstavlja regije razdeljene v skupine glede na BDP. Opazimo, da se pojavljajo podobnosti med letom 2019 in celotnim obdobjem od 2012 do 2019. Osrednjeslovenska regija je najpremožnejša. Vidimo tudi par geografskih povezav saj so nekatere regije, ki mejijo druga na drugo enako premožne glede BDP na prebivalca.
+
 ```{r shiny}
 #shinyAppDir("shiny", options=list(width="100%", height=600))
 ```
+
+
+## Zaključek
+
+***
+
+Projektne naloge sem se lotil s pričakovanjem, da se bodo čez čas cene, potrošnja in BDP sorazmerno povečali.
+Pri raziskovanju sem opazil, da glede na moje podatke ne morem potrditi lastnih sklepov. Zanimiva ugotovitev je, da povečanje dostopnosti do interneta ne vpliva na porabo električne energije po gospodinjstvih, čeprav elektrika predstavlja eden večjih energetskih stroškov gospodinjstev. Sprememba cene bencina in dizelskega goriva tudi ne vpliva na potrošnjo le teh, torej se nam lahko tu podajo nadaljna vprašanja zakaj torej potrošnja bencina pada in potrošnja dizelskega goriva narašča.
+Z regresijskimi premicami sem poskusil napovedovati trende v prihodnosti, kaj pričakovati, da se lahko v nekaj prihodnjih letih zgodi, seveda pa kot sem že omenil so to podatki pred Ukrajinsko krizo, ki bo gotovo močno vplivala na ceno energetskih virov.

@@ -10,13 +10,12 @@ Pri projektni nalogi bom analiziral potrosnjo prebivalstva v Sloveniji. Opazoval
 
 - Tabela 2: Cene energentov
     
-- Tabela 3: Dostop do interneta
+- Tabela 3: Dostop do interneta po gospodinjstvih
     
 - Tabela 4: Potrosnja
 
 - Tabela 5: Prebivalstvo
 
-- Tabela 6: Razpolozljiv dohodek po regijah
 
 ### Viri:
 
